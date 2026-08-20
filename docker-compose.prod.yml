@@ -17,6 +17,7 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
+    command: node server.js
     ports:
       - "4000:4000"
     environment:
