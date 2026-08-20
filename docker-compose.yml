@@ -9,7 +9,7 @@ services:
       MYSQL_USER: junubi
       MYSQL_PASSWORD: JunubiPass2026!
     volumes:
-      - mysql_data:/var/lib/mysql
+      - mysql_data_v2:/var/lib/mysql
 
   # ── Backend API ─────────────────────────────────────────────────────────────
   backend:
@@ -40,4 +40,4 @@ services:
       - backend
 
 volumes:
-  mysql_data:
+  mysql_data_v2:
