@@ -4,10 +4,10 @@ services:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
-      MYSQL_DATABASE: ${DB_NAME:-junubi_tech}
-      MYSQL_USER: ${DB_USER:-junubi}
-      MYSQL_PASSWORD: ${DB_PASSWORD:-junubi_secret}
+      MYSQL_ROOT_PASSWORD: JunubiRoot2026!
+      MYSQL_DATABASE: junubi_tech
+      MYSQL_USER: junubi
+      MYSQL_PASSWORD: JunubiPass2026!
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -23,10 +23,10 @@ services:
       PORT: 4000
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_USER: ${DB_USER:-junubi}
-      DB_PASSWORD: ${DB_PASSWORD:-junubi_secret}
-      DB_NAME: ${DB_NAME:-junubi_tech}
-      JWT_SECRET: ${JWT_SECRET:-supersecret_jwt_key_change_in_production}
+      DB_USER: junubi
+      DB_PASSWORD: JunubiPass2026!
+      DB_NAME: junubi_tech
+      JWT_SECRET: JunubiJWT2026SuperSecret!
     depends_on:
       - mysql
 
