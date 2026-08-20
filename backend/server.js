@@ -26,8 +26,37 @@ async function waitForDatabase(retries = MAX_RETRIES) {
   }
 }
 
+async function runMigrations() {
+  try {
+    logger.info('Running database migrations...');
+    await db.migrate.latest();
+    logger.info('Migrations completed successfully.');
+  } catch (err) {
+    logger.error('Migration failed:', { error: err.message });
+    process.exit(1);
+  }
+}
+
+async function runSeeds() {
+  try {
+    // Only seed if the users table is empty (avoid re-seeding on restart)
+    const [{ count }] = await db('users').count('id as count');
+    if (parseInt(count) === 0) {
+      logger.info('Running database seeds...');
+      await db.seed.run();
+      logger.info('Seeds completed successfully.');
+    } else {
+      logger.info('Database already seeded, skipping.');
+    }
+  } catch (err) {
+    logger.warn('Seed step skipped or failed (non-fatal):', { error: err.message });
+  }
+}
+
 async function start() {
   await waitForDatabase();
+  await runMigrations();
+  await runSeeds();
   app.listen(PORT, () => {
     logger.info(`Junubi Tech API running on port ${PORT}`, {
       env: process.env.NODE_ENV,
