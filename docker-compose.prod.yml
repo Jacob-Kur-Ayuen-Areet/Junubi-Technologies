@@ -2,7 +2,6 @@ services:
   # ── MySQL Database ──────────────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
-    container_name: junubi_mysql_prod
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
@@ -11,19 +10,15 @@ services:
       MYSQL_PASSWORD: ${DB_PASSWORD:-junubi_secret}
     volumes:
       - mysql_data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD || exit 1"]
-      interval: 5s
-      timeout: 5s
-      retries: 10
 
   # ── Backend API ─────────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: junubi_backend_prod
     restart: always
+    ports:
+      - "4000:4000"
     environment:
       NODE_ENV: production
       PORT: 4000
@@ -41,10 +36,9 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
-    container_name: junubi_frontend_prod
     restart: always
-    depends_on:
-      - backend
+    ports:
+      - "80:80"
 
 volumes:
   mysql_data:
