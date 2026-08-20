@@ -32,7 +32,7 @@ services:
     depends_on:
       - mysql
 
-  # ── Frontend Nginx ──────────────────────────────────────────────────────────
+  # ── Frontend (nginx production build) ───────────────────────────────────────
   frontend:
     build:
       context: ./frontend
@@ -40,6 +40,8 @@ services:
     restart: always
     ports:
       - "80:80"
+    depends_on:
+      - backend
 
 volumes:
   mysql_data:
