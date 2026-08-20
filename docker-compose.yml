@@ -1,0 +1,73 @@
+services:
+  # ── MySQL database ──────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: junubi_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root_secret
+      MYSQL_DATABASE: junubi_tech
+      MYSQL_USER: junubi
+      MYSQL_PASSWORD: junubi_secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Adminer (DB browser) ────────────────────────────────────────────────────
+  adminer:
+    image: adminer:latest
+    container_name: junubi_adminer
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ── Backend API ─────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: junubi_backend
+    restart: unless-stopped
+    env_file:
+      - .env.example
+    environment:
+      NODE_ENV: development
+      DB_HOST: mysql
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./backend:/app
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    command: npm run dev
+
+  # ── Frontend (Vite dev server) ──────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    container_name: junubi_frontend
+    restart: unless-stopped
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - VITE_API_URL=http://localhost:4000
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
