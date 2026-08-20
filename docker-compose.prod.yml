@@ -12,10 +12,10 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
-      interval: 10s
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p$$MYSQL_ROOT_PASSWORD || exit 1"]
+      interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   # ── Backend API ─────────────────────────────────────────────────────────────
   backend:
@@ -28,13 +28,13 @@ services:
       NODE_ENV: production
       PORT: 4000
       DB_HOST: mysql
+      DB_PORT: 3306
       DB_USER: ${DB_USER:-junubi}
       DB_PASSWORD: ${DB_PASSWORD:-junubi_secret}
       DB_NAME: ${DB_NAME:-junubi_tech}
       JWT_SECRET: ${JWT_SECRET:-supersecret_jwt_key_change_in_production}
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
 
   # ── Frontend Nginx ──────────────────────────────────────────────────────────
   frontend:
