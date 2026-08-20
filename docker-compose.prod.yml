@@ -1,0 +1,50 @@
+services:
+  # ── MySQL Database ──────────────────────────────────────────────────────────
+  mysql:
+    image: mysql:8.0
+    container_name: junubi_mysql_prod
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root_secret}
+      MYSQL_DATABASE: ${DB_NAME:-junubi_tech}
+      MYSQL_USER: ${DB_USER:-junubi}
+      MYSQL_PASSWORD: ${DB_PASSWORD:-junubi_secret}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Backend API ─────────────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: junubi_backend_prod
+    restart: always
+    environment:
+      NODE_ENV: production
+      PORT: 4000
+      DB_HOST: mysql
+      DB_USER: ${DB_USER:-junubi}
+      DB_PASSWORD: ${DB_PASSWORD:-junubi_secret}
+      DB_NAME: ${DB_NAME:-junubi_tech}
+      JWT_SECRET: ${JWT_SECRET:-supersecret_jwt_key_change_in_production}
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  # ── Frontend Nginx ──────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: junubi_frontend_prod
+    restart: always
+    depends_on:
+      - backend
+
+volumes:
+  mysql_data:
