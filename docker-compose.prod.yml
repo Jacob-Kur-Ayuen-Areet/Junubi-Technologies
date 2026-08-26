@@ -1,43 +1,76 @@
 services:
-  # ── MySQL Database ──────────────────────────────────────────────────────────
+  # ── Nginx reverse proxy (auto-handles SSL) ─────────────────────────────────
+  nginx-proxy:
+    image: nginxproxy/nginx-proxy:1.5
+    restart: always
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - nginx_certs:/etc/nginx/certs
+      - nginx_vhost:/etc/nginx/vhost.d
+      - nginx_html:/usr/share/nginx/html
+      - nginx_conf:/etc/nginx/conf.d
+
+  # ── Let's Encrypt automatic SSL ────────────────────────────────────────────
+  letsencrypt:
+    image: nginxproxy/acme-companion:2.4
+    restart: always
+    volumes_from:
+      - nginx-proxy
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - acme_data:/etc/acme.sh
+    environment:
+      - DEFAULT_EMAIL=admin@junubitech.com
+
+  # ── MySQL Database ─────────────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: JunubiRoot2026!
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-JunubiRoot2026!}
       MYSQL_DATABASE: junubi_tech
       MYSQL_USER: junubi
-      MYSQL_PASSWORD: JunubiPass2026!
+      MYSQL_PASSWORD: ${DB_PASSWORD:-JunubiPass2026!}
     volumes:
-      - mysql_data_v2:/var/lib/mysql
+      - mysql_data:/var/lib/mysql
 
-  # ── Backend API ─────────────────────────────────────────────────────────────
+  # ── Backend API ────────────────────────────────────────────────────────────
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     restart: always
-    command: node server.js
+    env_file: .env
     environment:
       NODE_ENV: production
       PORT: 4000
       DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: junubi
-      DB_PASSWORD: JunubiPass2026!
-      DB_NAME: junubi_tech
-      JWT_SECRET: JunubiJWT2026SuperSecret!
+      VIRTUAL_HOST: api.junubitech.com
+      LETSENCRYPT_HOST: api.junubitech.com
+      VIRTUAL_PORT: 4000
     depends_on:
       - mysql
 
-  # ── Frontend (nginx production build) ───────────────────────────────────────
+  # ── Frontend (nginx static build) ─────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     restart: always
+    environment:
+      VIRTUAL_HOST: junubitech.com,www.junubitech.com
+      LETSENCRYPT_HOST: junubitech.com,www.junubitech.com
+      VIRTUAL_PORT: 80
     depends_on:
       - backend
 
 volumes:
-  mysql_data_v2:
+  mysql_data:
+  nginx_certs:
+  nginx_vhost:
+  nginx_html:
+  nginx_conf:
+  acme_data:
