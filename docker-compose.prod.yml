@@ -1,39 +1,13 @@
 services:
-  # ── Nginx reverse proxy (auto-handles SSL) ─────────────────────────────────
-  nginx-proxy:
-    image: nginxproxy/nginx-proxy:1.5
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    volumes:
-      - /var/run/docker.sock:/tmp/docker.sock:ro
-      - nginx_certs:/etc/nginx/certs
-      - nginx_vhost:/etc/nginx/vhost.d
-      - nginx_html:/usr/share/nginx/html
-      - nginx_conf:/etc/nginx/conf.d
-
-  # ── Let's Encrypt automatic SSL ────────────────────────────────────────────
-  letsencrypt:
-    image: nginxproxy/acme-companion:2.4
-    restart: always
-    volumes_from:
-      - nginx-proxy
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - acme_data:/etc/acme.sh
-    environment:
-      - DEFAULT_EMAIL=admin@junubitech.com
-
   # ── MySQL Database ─────────────────────────────────────────────────────────
   mysql:
     image: mysql:8.0
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-JunubiRoot2026!}
-      MYSQL_DATABASE: junubi_tech
-      MYSQL_USER: junubi
-      MYSQL_PASSWORD: ${DB_PASSWORD:-JunubiPass2026!}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}        # ← must match DB_PASSWORD below
     volumes:
       - mysql_data:/var/lib/mysql
 
@@ -48,29 +22,21 @@ services:
       NODE_ENV: production
       PORT: 4000
       DB_HOST: mysql
-      VIRTUAL_HOST: api.junubitech.com
-      LETSENCRYPT_HOST: api.junubitech.com
-      VIRTUAL_PORT: 4000
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME}
+      DB_USER: ${DB_USER}
+      DB_PASSWORD: ${DB_PASSWORD}           # ← same var, guaranteed to match
     depends_on:
       - mysql
 
-  # ── Frontend (nginx static build) ─────────────────────────────────────────
+  # ── Frontend (nginx static SPA) ────────────────────────────────────────────
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     restart: always
-    environment:
-      VIRTUAL_HOST: junubitech.com,www.junubitech.com
-      LETSENCRYPT_HOST: junubitech.com,www.junubitech.com
-      VIRTUAL_PORT: 80
     depends_on:
       - backend
 
 volumes:
   mysql_data:
-  nginx_certs:
-  nginx_vhost:
-  nginx_html:
-  nginx_conf:
-  acme_data:
