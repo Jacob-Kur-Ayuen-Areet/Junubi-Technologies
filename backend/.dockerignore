@@ -1,0 +1,12 @@
+# Never bake secrets or dev configs into the image
+.env
+.env.*
+!.env.example
+
+# Dev/build artifacts
+node_modules
+npm-debug.log*
+
+# Git
+.git
+.gitignore

@@ -1,4 +1,4 @@
-require('dotenv').config();
+require('dotenv').config({ override: false }); // Docker env vars always take priority
 const app = require('./src/app');
 const logger = require('./src/config/logger');
 const db = require('./src/config/db');
