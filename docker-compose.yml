@@ -10,6 +10,8 @@ services:
       MYSQL_PASSWORD: JunubiPass2026!
     volumes:
       - mysql_data_v2:/var/lib/mysql
+    networks:
+      - app-network
 
   # ── Backend API ─────────────────────────────────────────────────────────────
   backend:
@@ -27,8 +29,11 @@ services:
       DB_PASSWORD: JunubiPass2026!
       DB_NAME: junubi_tech
       JWT_SECRET: JunubiJWT2026SuperSecret!
+      FRONTEND_ORIGIN: '*'
     depends_on:
       - mysql
+    networks:
+      - app-network
 
   # ── Frontend (nginx production build) ───────────────────────────────────────
   frontend:
@@ -38,6 +43,12 @@ services:
     restart: always
     depends_on:
       - backend
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   mysql_data_v2:
