@@ -1,5 +1,8 @@
 const bcrypt = require('bcryptjs');
 
+// MySQL TIMESTAMP columns require 'YYYY-MM-DD HH:MM:SS' format, not ISO 8601
+const toMySQL = (date) => date.toISOString().slice(0, 19).replace('T', ' ');
+
 exports.seed = async function (knex) {
   // Clean in reverse FK order
   await knex('ticket_replies').del();
@@ -241,7 +244,7 @@ exports.seed = async function (knex) {
       currency: 'USD',
       status: 'paid',
       due_date: dueDate2.toISOString().split('T')[0],
-      paid_at: new Date().toISOString(),
+      paid_at: toMySQL(new Date()),
     },
     {
       user_id: client1Id,
