@@ -314,7 +314,7 @@ Starting from just $20 per month, you get a KVM-based virtual server with full r
 Contact us today to discuss which VPS plan is right for your business.`,
       excerpt: 'Junubi Technologies announces VPS Hosting plans from $20/month, bringing reliable virtual private servers to South Sudanese businesses.',
       author_id: adminId,
-      published_at: new Date('2026-07-15').toISOString(),
+      published_at: toMySQL(new Date('2026-07-15')),
     },
     {
       title: 'Why Your South Sudan Business Needs SSL in 2026',
@@ -338,7 +338,7 @@ SSL encrypts data in transit, preventing man-in-the-middle attacks. In environme
 We can also help you install and configure your certificate correctly, including setting up automatic renewal so you never accidentally expire.`,
       excerpt: 'SSL certificates protect your visitors, improve your Google ranking, and build trust. Learn which type is right for your business.',
       author_id: admin2Id,
-      published_at: new Date('2026-08-01').toISOString(),
+      published_at: toMySQL(new Date('2026-08-01')),
     },
     {
       title: 'Building a Digital South Sudan: Our Mission',
@@ -360,7 +360,7 @@ We believe that connectivity is infrastructure — as essential as roads and pow
 Join us on that journey.`,
       excerpt: 'Our story, our mission, and why we believe digital infrastructure is as important as physical infrastructure for South Sudan\'s future.',
       author_id: adminId,
-      published_at: new Date('2026-06-20').toISOString(),
+      published_at: toMySQL(new Date('2026-06-20')),
     },
     {
       title: 'Choosing the Right Hosting Plan: Shared vs VPS vs Dedicated',
@@ -386,7 +386,7 @@ Cost: From $150/month | Recommended for: High-traffic sites, data-intensive appl
 Our hosting plans are designed to grow with your business. You can always upgrade from shared to VPS, or VPS to dedicated, with our team handling the migration for you.`,
       excerpt: 'Compare shared, VPS, and dedicated hosting to find the right plan for your website traffic and budget.',
       author_id: admin2Id,
-      published_at: new Date('2026-08-10').toISOString(),
+      published_at: toMySQL(new Date('2026-08-10')),
     },
     {
       title: '5 Signs Your Business Website Needs a Redesign',
@@ -411,7 +411,7 @@ Has your business evolved but your website not? Misaligned messaging confuses po
 If two or more of these apply to your business, it is time to talk to us about a redesign. We build modern, fast, mobile-first websites designed to convert visitors into customers.`,
       excerpt: 'Is your website hurting more than helping? Here are 5 warning signs that it is time for a redesign.',
       author_id: adminId,
-      published_at: new Date('2026-08-18').toISOString(),
+      published_at: toMySQL(new Date('2026-08-18')),
     },
   ]);
 
