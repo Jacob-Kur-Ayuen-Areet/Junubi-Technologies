@@ -80,7 +80,6 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.1 }}
               >
                 <Card>
-                  <div style={{ fontSize: '2.25rem', marginBottom: '1rem' }}>{icon}</div>
                   <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600, fontSize: '1.05rem', marginBottom: '0.5rem', color: '#F3EFE4' }}>{title}</h3>
                   <p style={{ color: '#c8c3b7', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{desc}</p>
                 </Card>
