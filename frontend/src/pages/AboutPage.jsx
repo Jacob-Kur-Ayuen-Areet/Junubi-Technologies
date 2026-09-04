@@ -4,7 +4,7 @@ import { Badge, Card } from '../components/ui/index';
 import NetworkMap from '../components/sections/NetworkMap';
 
 const TEAM = [
-  { name: 'James Lado', role: 'Co-Founder & CEO', bio: 'Systems engineer with 12 years of experience in East African telecoms.' },
+  { name: 'Kur Ayuen Areet', role: 'Co-Founder & CEO', bio: 'Systems engineer with 12 years of experience in East African telecoms.', photo: '/Jacob Kur.jpg' },
   { name: 'Ayen Deng', role: 'Co-Founder & CTO', bio: 'Full-stack developer and open-source contributor. Passionate about local tech capacity building.' },
   { name: 'Emmanuel Taban', role: 'Head of Operations', bio: 'Keeps the infrastructure running and the clients happy from our Juba offices.' },
 ];
@@ -96,7 +96,7 @@ export default function AboutPage() {
             Meet the team
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
-            {TEAM.map(({ name, role, bio }, i) => (
+            {TEAM.map(({ name, role, bio, photo }, i) => (
               <motion.div
                 key={name}
                 initial={{ opacity: 0, y: 20 }}
@@ -105,16 +105,31 @@ export default function AboutPage() {
                 transition={{ delay: i * 0.1 }}
               >
                 <Card style={{ textAlign: 'center' }}>
-                  <div style={{
-                    width: '72px', height: '72px', borderRadius: '50%',
-                    background: 'linear-gradient(135deg, rgba(63,193,176,0.3), rgba(231,169,75,0.2))',
-                    border: '2px solid rgba(63,193,176,0.3)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    margin: '0 auto 1.25rem',
-                    fontSize: '1.75rem',
-                  }}>
-                    {name.charAt(0)}
-                  </div>
+                  {photo ? (
+                    <img
+                      src={photo}
+                      alt={name}
+                      style={{
+                        width: '88px', height: '88px', borderRadius: '50%',
+                        objectFit: 'cover',
+                        border: '2px solid rgba(63,193,176,0.4)',
+                        display: 'block',
+                        margin: '0 auto 1.25rem',
+                        boxShadow: '0 0 20px rgba(63,193,176,0.15)',
+                      }}
+                    />
+                  ) : (
+                    <div style={{
+                      width: '72px', height: '72px', borderRadius: '50%',
+                      background: 'linear-gradient(135deg, rgba(63,193,176,0.3), rgba(231,169,75,0.2))',
+                      border: '2px solid rgba(63,193,176,0.3)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      margin: '0 auto 1.25rem',
+                      fontSize: '1.75rem',
+                    }}>
+                      {name.charAt(0)}
+                    </div>
+                  )}
                   <h3 style={{ fontFamily: 'Space Grotesk, sans-serif', fontWeight: 600, fontSize: '1.05rem', marginBottom: '0.25rem', color: '#F3EFE4' }}>{name}</h3>
                   <p style={{ color: '#E7A94B', fontSize: '0.85rem', marginBottom: '0.875rem', fontWeight: 500 }}>{role}</p>
                   <p style={{ color: '#c8c3b7', fontSize: '0.9rem', lineHeight: 1.65, margin: 0 }}>{bio}</p>
